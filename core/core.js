@@ -4,12 +4,12 @@ function include(file) {
 
 function Core(canvasName, fullscreen) {
   
-  include("object.js");
-  include("matrix.js");
-  include("vector.js");
-  include("edge.js");
-  include("ray.js");
-  include("light.js");
+  include("core/object.js");
+  include("core/matrix.js");
+  include("core/vector.js");
+  include("core/edge.js");
+  include("core/ray.js");
+  include("core/light.js");
   
   this.canvas = document.getElementById(canvasName);
   this.context = this.canvas.getContext("2d");
