@@ -144,6 +144,9 @@ Core.prototype = {
     this.coreDraw();
   },
   drawEdges: function(drawNormals) {
+  
+    this.context.globalCompositeOperation = "source-over";
+  
     this.context.beginPath();
     for (var i=0; i<this.edges.length; i++) {
       this.context.moveTo(this.edges[i].p.x, this.edges[i].p.y)
@@ -178,10 +181,10 @@ Core.prototype = {
       this.context.save();
       this.context.translate(this.canvas.width/2, this.canvas.height/2);
     
+      this.draw();
       if (this.showEdges) {
         this.drawEdges(true);
       }
-      this.draw();
     
       this.context.restore();
       this.framecount += 1;

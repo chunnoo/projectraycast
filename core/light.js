@@ -9,6 +9,8 @@ function Light(paramSourceX, paramSourceY) {
 Light.prototype = {
   edgeArrayCollision: function(edgeArray) {
   
+    this.points.length = 0;
+  
     var tempEdgePointArray = [];
     
     for (var i = 0; i < edgeArray.length; i++) {
@@ -128,7 +130,7 @@ Light.prototype = {
     
   },
   updateP: function(paramX, paramY) {
-    this.source = new Vec2(paramX, paramY);
+    this.source = new Vec2(Math.round(paramX), Math.round(paramY));
     this.points.length = 0;
   }
   
