@@ -50,7 +50,7 @@ game.draw = function() {
       this.context.lineTo(this.objects.secondTestLight.points[i].x, this.objects.secondTestLight.points[i].y);
     }
     this.context.closePath();
-    this.context.fillStyle = "rgba(64, 64, 64, 1)";
+    this.context.fillStyle = "rgba(64 , 0, 0, 1)";
     this.context.fill();
   }
 
@@ -76,7 +76,7 @@ game.draw = function() {
   //second light source
   this.context.beginPath();
   this.context.arc(this.objects.secondTestLight.source.x, this.objects.secondTestLight.source.y, 10, 0, Math.PI*2, false);
-  this.context.fillStyle = "rgba(255, 255, 255, 1)";
+  this.context.fillStyle = "rgba(255, 0, 0, 1)";
   this.context.fill();
   
   this.context.globalCompositeOperation = "source-over";
