@@ -15,6 +15,18 @@ function Core(canvasName, paramGame, fullscreen) {
   this.canvas = document.getElementById(canvasName);
   this.context = this.canvas.getContext("2d");
   
+  /*if (window.devicePixelRatio > 1) {
+    var canvasWidth = this.canvas.width;
+    var canvasHeight = this.canvas.height;
+
+    this.canvas.width = canvasWidth * window.devicePixelRatio;
+    this.canvas.height = canvasHeight * window.devicePixelRatio;
+    this.canvas.style.width = canvasWidth;
+    this.canvas.style.height = canvasHeight;
+
+    this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }*/
+  
   this.game = paramGame;
   
   this.screen = new Vec2(0, 0);
