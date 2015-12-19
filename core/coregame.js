@@ -34,9 +34,9 @@ function CoreGame(core) {
 
   core.draw = function() {
     
-    this.lights[1].update(320*Math.cbrt(Math.cos(this.framecount/128)), 320*Math.cbrt(Math.sin(this.framecount/128)), this.edges);
+    this.lights[1].update(320*Math.cbrt(Math.cos(this.framecount/512)), 320*Math.cbrt(Math.sin(this.framecount/512)), this.edges);
     
-    this.lights[2].update(320*Math.cbrt(Math.cos(-this.framecount/120)), 320*Math.cbrt(Math.sin(-this.framecount/120)), this.edges);
+    this.lights[2].update(320*Math.cbrt(Math.cos(-this.framecount/500)), 320*Math.cbrt(Math.sin(-this.framecount/500)), this.edges);
 
     this.lights[0].update(this.game.player.pos.x, this.game.player.pos.y, this.edges);
     
