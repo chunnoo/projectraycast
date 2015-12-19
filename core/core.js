@@ -15,18 +15,6 @@ function Core(canvasName, paramGame, fullscreen) {
   this.canvas = document.getElementById(canvasName);
   this.context = this.canvas.getContext("2d");
   
-  /*if (window.devicePixelRatio > 1) {
-    var canvasWidth = this.canvas.width;
-    var canvasHeight = this.canvas.height;
-
-    this.canvas.width = canvasWidth * window.devicePixelRatio;
-    this.canvas.height = canvasHeight * window.devicePixelRatio;
-    this.canvas.style.width = canvasWidth;
-    this.canvas.style.height = canvasHeight;
-
-    this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
-  }*/
-  
   this.game = paramGame;
   
   this.screen = new Vec2(0, 0);
@@ -39,6 +27,9 @@ function Core(canvasName, paramGame, fullscreen) {
   };
   
   this.framecount = 0;
+  this.framerate = 0;
+  this.time = Date.now();
+  this.deltaTime = 0;
   this.focus = true;
   
   this.edges = [];
@@ -250,6 +241,17 @@ Core.prototype = {
   },
   coreDraw: function() {
     if (this.focus) {
+    
+      this.deltaTime = (new Date().getTime() - this.time)/1000;
+      this.time = Date.now();
+      this.fps = 1/this.deltaTime;
+      
+      if (this.deltaTime > 1/15) {
+        this.game.updateRate = 0;
+      } else {
+        this.game.updateRate = this.deltaTime*60;
+      }
+    
       if (this.clearFrame) {
         this.clearFrame();
       } else {

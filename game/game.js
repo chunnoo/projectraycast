@@ -1,4 +1,7 @@
 function Game() {
+
+  this.updateRate = 0;
+  this.gameTime = 0;
   
   this.player = {
     pos: new Vec2(0, 0),
@@ -18,10 +21,13 @@ function Game() {
 
 Game.prototype = {
   update: function() {
-    this.player.pos.x += this.player.vel.x;
-    this.player.pos.y += this.player.vel.y;
-    this.player.vel.x += this.player.acc.x;
-    this.player.vel.y += this.player.acc.y;
+  
+    this.gameTime += this.updateRate;
+  
+    this.player.pos.x += this.player.vel.x*this.updateRate;
+    this.player.pos.y += this.player.vel.y*this.updateRate;
+    this.player.vel.x += this.player.acc.x*this.updateRate;
+    this.player.vel.y += this.player.acc.y*this.updateRate;
     
     if (this.playerDestination) {
     
