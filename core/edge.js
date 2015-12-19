@@ -21,8 +21,20 @@ Edge.prototype = {
   connect: function(pEdge, qEdge) {
     this.connectedAtP = new Vec2(pEdge.n.x, pEdge.n.y);
     this.connectedAtQ = new Vec2(qEdge.n.x, qEdge.n.y);
+  },
+  move: function(paramX, paramY) {
+    this.p.x += paramX;
+    this.p.y += paramY;
+    this.q.x += paramX;
+    this.q.y += paramY;
   }
 };
+
+function moveEdges(paramX, paramY, edgeArray, first, last) {
+  for (var i = first; i <= last; i++) {
+    edgeArray[i].move(paramX, paramY);
+  }
+}
 
 function connectEdges(edgeArray, first, last) {
   edgeArray[first].connect(edgeArray[last], edgeArray[first + 1]);
