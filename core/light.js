@@ -1,6 +1,12 @@
-function Light(paramSourceX, paramSourceY) {
+function Light(paramSourceX, paramSourceY, paramColor) {
 
   this.source = new Vec2(paramSourceX, paramSourceY);
+  
+  if (paramColor) {
+    this.color = paramColor;
+  } else {
+    this.color = "rgba(64, 64, 64, 1)";
+  }
   
   this.points = [];
   
@@ -129,9 +135,9 @@ Light.prototype = {
     }.bind(this));*/
     
   },
-  updateP: function(paramX, paramY) {
+  update: function(paramX, paramY, edgeArray) {
     this.source = new Vec2(Math.round(paramX), Math.round(paramY));
-    this.points.length = 0;
+    this.edgeArrayCollision(edgeArray);
   }
   
 };
