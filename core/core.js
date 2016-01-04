@@ -291,6 +291,7 @@ Core.prototype = {
       }
     
       this.context.restore();
+      
       this.framecount += 1;
     
       requestAnimationFrame(this.coreDraw.bind(this));
