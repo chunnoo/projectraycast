@@ -70,12 +70,14 @@ Ray.prototype = {
     }
     return vec2Array;
   },
-  nearestEdgeArrayCollision: function(edgeArray) {
+  nearestEdgeArrayCollision: function(edgeArray, radius) {
     var nearest;
     var nearestIndex;
     for (var i = 0; i < edgeArray.length; i++) {
       if (!edgeArray[i].inverted) {
-        var currentCollisionDist = this.edgeCollisionDist(edgeArray[i], false);
+        var tempEdge = new Edge(edgeArray[i].p.x + edgeArray[i].n.x*radius, edgeArray[i].p.y + edgeArray[i].n.y*radius, edgeArray[i].q.x + edgeArray[i].n.x*radius, edgeArray[i].q.y + edgeArray[i].n.y*radius);
+        
+        var currentCollisionDist = this.edgeCollisionDist(tempEdge, false);
         if (currentCollisionDist && (currentCollisionDist < nearest || !nearest)) {
           nearest = currentCollisionDist;
           nearestIndex = i;

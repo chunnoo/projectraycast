@@ -6,7 +6,8 @@ function Game() {
   this.player = {
     pos: new Vec2(0, 0),
     vel: new Vec2(0, 0),
-    acc: new Vec2(0, 0)};
+    acc: new Vec2(0, 0),
+    radius: 25};
   
   this.movementRay = new Ray(this.player.pos.x, this.player.pos.y, this.player.vel.x, this.player.vel.y, false);
   
@@ -67,8 +68,8 @@ Game.prototype = {
   
     this.movementRay.updateP(this.player.pos.x, this.player.pos.y);
     this.movementRay.updateV(this.player.vel.x + this.player.acc.x, this.player.vel.y + this.player.acc.y);
-    
-    var collisionNormal = this.movementRay.nearestEdgeArrayCollision(edgeArray);
+  
+    var collisionNormal = this.movementRay.nearestEdgeArrayCollision(edgeArray, this.player.radius);
     
     if (collisionNormal) {
     
