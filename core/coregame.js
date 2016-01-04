@@ -54,15 +54,6 @@ function CoreGame(core) {
     this.context.fillStyle = "rgba(255, 0, 0, 1)";
     this.context.fill();
     
-    this.context.globalCompositeOperation = "source-over";
-    
-    this.context.beginPath();
-    this.context.arc(this.game.player.pos.x, this.game.player.pos.y, 25, 0, Math.PI*2, false);
-    this.context.lineWidth = 5;
-    this.context.fillStyle = "rgba(255, 255, 255, 1)";
-    this.context.stroke();
-    this.context.lineWidth = 1;
-    
   };
 
   core.clearFrame = function() {
@@ -73,38 +64,39 @@ function CoreGame(core) {
     this.game.leftMouseDown(this.mouse.x, this.mouse.y);
   }
 
-  core.keypress = function(charCode) {
+  core.keydown = function(charCode) {
+    
     if (charCode == 116 || charCode == 84) {
       //T is pressed
       this.showEdges = !this.showEdges;
     } else if (charCode == 97 || charCode == 65) {
       //A is pressed
-      this.game.keypress(-1, 0);
+      this.game.keydown(0);
     } else if (charCode == 119 || charCode == 87) {
       //W is pressed
-      this.game.keypress(0, -1);
+      this.game.keydown(1);
     } else if (charCode == 100 || charCode == 68) {
       //D is pressed
-      this.game.keypress(1, 0);
+      this.game.keydown(2);
     } else if (charCode == 115 || charCode == 83) {
       //S is pressed
-      this.game.keypress(0, 1);
+      this.game.keydown(3);
     }
   }
   
   core.keyup = function(charCode) {
     if (charCode == 97 || charCode == 65) {
       //A is released
-      this.game.keyup(-1, 0);
+      this.game.keyup(0);
     } else if (charCode == 119 || charCode == 87) {
       //W is released
-      this.game.keyup(0, -1);
+      this.game.keyup(1);
     } else if (charCode == 100 || charCode == 68) {
       //D is released
-      this.game.keyup(1, 0);
+      this.game.keyup(2);
     } else if (charCode == 115 || charCode == 83) {
       //S is released
-      this.game.keyup(0, 1);
+      this.game.keyup(3);
     }
   }
   

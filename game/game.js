@@ -8,93 +8,98 @@ function Game() {
     vel: new Vec2(0, 0),
     acc: new Vec2(0, 0)};
   
+  this.movementRay = new Ray(this.player.pos.x, this.player.pos.y, this.player.vel.x, this.player.vel.y, false);
+  
   this.playerDestination = false;
   
-  this.keyboardMovement = false;
-  
+  this.keyboardMovement = new Vec2(0, 0);
   this.movementS = 2.0;
+  this.keyDir = [
+    new Vec2(-1, 0),
+    new Vec2(0, -1),
+    new Vec2(1, 0),
+    new Vec2(0, 1)];
+  this.keyStates = [
+    false,
+    false,
+    false,
+    false];
   
-  this.movementK = 0.01;
+  this.movementK = 0.02;
+  
   this.movementD = 0.1;
   
 }
 
 Game.prototype = {
-  update: function() {
+  update: function(edgeArray) {
   
     this.gameTime += this.updateRate;
-  
-    this.player.pos.x += this.player.vel.x*this.updateRate;
-    this.player.pos.y += this.player.vel.y*this.updateRate;
+    
+    this.playerCollision(edgeArray);
+    
     this.player.vel.x += this.player.acc.x*this.updateRate;
     this.player.vel.y += this.player.acc.y*this.updateRate;
     
+    this.player.pos.x += this.player.vel.x*this.updateRate;
+    this.player.pos.y += this.player.vel.y*this.updateRate;
+    
+    this.player.acc.x = 0;
+    this.player.acc.y = 0;
+    
+    var movementDrag = this.movementD*Math.pow(this.player.vel.length(), 2);
+    this.player.acc.x -= movementDrag*this.player.vel.unit().x;
+    this.player.acc.y -= movementDrag*this.player.vel.unit().y;
+    
     if (this.playerDestination) {
-    
-      var distToDest = Math.sqrt(Math.pow(this.playerDestination.x - this.player.pos.x, 2) + Math.pow(this.playerDestination.y - this.player.pos.y, 2));
       
-      this.player.acc.x = this.movementK*(this.playerDestination.x - this.player.pos.x) - this.movementD*this.player.vel.x*Math.abs(this.player.vel.x);
-      this.player.acc.y = this.movementK*(this.playerDestination.y - this.player.pos.y) - this.movementD*this.player.vel.y*Math.abs(this.player.vel.y);
+      var toDest = new Vec2(this.playerDestination.x - this.player.pos.x, this.playerDestination.y - this.player.pos.y);
       
-    } else if (this.keyboardMovement) {
-    
-      this.player.acc.x = this.movementS*(this.keyboardMovement.x) - this.movementD*this.player.vel.x*Math.abs(this.player.vel.x);
-      this.player.acc.y = this.movementS*(this.keyboardMovement.y) - this.movementD*this.player.vel.y*Math.abs(this.player.vel.y);
+      this.player.acc.x += this.movementK*toDest.length()*toDest.unit().x;
+      this.player.acc.y += this.movementK*toDest.length()*toDest.unit().y;
       
-    } else {
+    }
     
-      this.player.acc.x = -this.movementD*this.player.vel.x*Math.abs(this.player.vel.x);
-      this.player.acc.y = -this.movementD*this.player.vel.y*Math.abs(this.player.vel.y);
+    this.player.acc.x += this.movementS*this.keyboardMovement.unit().x;
+    this.player.acc.y += this.movementS*this.keyboardMovement.unit().y;
     
+  },
+  playerCollision: function(edgeArray) {
+  
+    this.movementRay.updateP(this.player.pos.x, this.player.pos.y);
+    this.movementRay.updateV(this.player.vel.x*this.updateRate + this.player.acc.x*this.updateRate, this.player.vel.y*this.updateRate + this.player.acc.y*this.updateRate);
+    
+    var collisionNormal = this.movementRay.nearestEdgeArrayCollision(edgeArray);
+    
+    if (collisionNormal) {
+    
+      this.playerDestination = false;
+    
+      var normalVeldot = collisionNormal.dot(this.movementRay.v);
+      this.player.acc.x -= 2*normalVeldot*collisionNormal.x;// + (this.player.vel.x*this.updateRate + this.player.acc.x*this.updateRate);
+      this.player.acc.y -= 2*normalVeldot*collisionNormal.y;// + (this.player.vel.y*this.updateRate + this.player.acc.y*this.updateRate);
     }
     
   },
   leftMouseDown: function(paramX, paramY) {
     this.playerDestination = new Vec2(paramX, paramY);
   },
-  keypress: function(x, y) {
+  keydown: function(key) {
   
     this.playerDestination = false;
     
-    if (this.keyboardMovement) {
-    
-      if (this.keyboardMovement.x != 0) {
-        this.keyboardMovement.x = this.keyboardMovement.x/Math.abs(this.keyboardMovement.x) + x;
-      } else {
-        this.keyboardMovement.x = x;
-      }
-      
-      if (this.keyboardMovement.y != 0) {
-        this.keyboardMovement.y = this.keyboardMovement.y/Math.abs(this.keyboardMovement.y) + y;
-      } else {
-        this.keyboardMovement.y = y;
-      }
-      
-      if (this.keyboardMovement.x != 0 && this.keyboardMovement.y != 0) {
-        this.keyboardMovement = this.keyboardMovement.unit();
-      }
-      
-    } else {
-      this.keyboardMovement = new Vec2(x, y);
+    if (!this.keyStates[key]) {
+      this.keyStates[key] = true;
+      this.keyboardMovement.x += this.keyDir[key].x;
+      this.keyboardMovement.y += this.keyDir[key].y;
     }
+    
   },
-  keyup: function(x, y) {
-    if (this.keyboardMovement) {
+  keyup: function(key) {
     
-      if (this.keyboardMovement.x != 0) {
-        this.keyboardMovement.x = this.keyboardMovement.x/Math.abs(this.keyboardMovement.x) - x;
-      }
-      if (this.keyboardMovement.y != 0) {
-        this.keyboardMovement.y = this.keyboardMovement.y/Math.abs(this.keyboardMovement.y) - y;
-      }
-      
-      if (this.keyboardMovement.x == 0 && this.keyboardMovement.y == 0) {
-        this.keyboardMovement = false;
-      } else {
-        this.keyboardMovement = this.keyboardMovement.unit();
-      }
-      
-    }
+    this.keyStates[key] = false;
+    this.keyboardMovement.x -= this.keyDir[key].x;
+    this.keyboardMovement.y -= this.keyDir[key].y;
     
   }
 }

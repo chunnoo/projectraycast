@@ -60,16 +60,40 @@ Ray.prototype = {
   },
   edgeArrayCollision: function(edgeArray) {
     var vec2Array = [];
-    var j = 0;
     for (var i = 0; i < edgeArray.length; i++) {
       if (!edgeArray[i].inverted) {
         var currentCollision = this.edgeCollision(edgeArray[i], false);
         if (currentCollision) {
-          vec2Array[j] = currentCollision;
-          j++;
+          vec2Array.push(currentCollision);
         }
       }
     }
     return vec2Array;
+  },
+  nearestEdgeArrayCollision: function(edgeArray) {
+    var nearest;
+    var nearestIndex;
+    for (var i = 0; i < edgeArray.length; i++) {
+      if (!edgeArray[i].inverted) {
+        var currentCollisionDist = this.edgeCollisionDist(edgeArray[i], false);
+        if (currentCollisionDist && (currentCollisionDist < nearest || !nearest)) {
+          nearest = currentCollisionDist;
+          nearestIndex = i;
+        }
+      }
+    }
+    if (nearest) {
+      return edgeArray[nearestIndex].n;
+    } else {
+      return false;
+    }
   }
 };
+
+
+
+
+
+
+
+

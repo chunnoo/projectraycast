@@ -114,11 +114,11 @@ Light.prototype = {
       }
       if (shortestDist > 0) {
         if (tempEdgePointArray[i] < 0) {
-          this.points.push(new Vec2(shortestDistVec.x*shortestDist + tempRay.p.x, shortestDistVec.y*shortestDist + tempRay.p.y));
+          this.points.push(new Vec2(Math.round(shortestDistVec.x*shortestDist + tempRay.p.x), Math.round(shortestDistVec.y*shortestDist + tempRay.p.y)));
           this.points.push(tempPoint);
         } else {
           this.points.push(tempPoint);
-          this.points.push(new Vec2(shortestDistVec.x*shortestDist + tempRay.p.x, shortestDistVec.y*shortestDist + tempRay.p.y));
+          this.points.push(new Vec2(Math.round(shortestDistVec.x*shortestDist + tempRay.p.x), Math.round(shortestDistVec.y*shortestDist + tempRay.p.y)));
         }
       }
     }
