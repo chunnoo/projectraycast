@@ -12,7 +12,7 @@ Vec2.prototype = {
   unit: function() {
     var l = this.length();
     if (l <= 0) {
-      console.log("Length of Vec2 is less then or equal to zero; Can't create unit vector.");
+      return new Vec2(0, 0);
     }
     return new Vec2(this.x / l, this.y / l);
   },

@@ -1,7 +1,7 @@
 function Edge(paramXOne, paramYOne, paramXTwo, paramYTwo) {
   
-  this.p = new Vec2(paramXOne, paramYOne);
-  this.q = new Vec2(paramXTwo, paramYTwo);
+  this.p = new Vec2(Math.round(paramXOne), Math.round(paramYOne));
+  this.q = new Vec2(Math.round(paramXTwo), Math.round(paramYTwo));
   this.v = this.p.diff(this.q);
   this.n = this.v.normalize();
   

@@ -122,12 +122,12 @@ function Core(canvasName, paramGame, fullscreen) {
     this.mouse.y = e.targetTouches[0].pageY - (this.canvas.height/2 - this.screen.y);
   }.bind(this)
   
-  window.addEventListener("keypress", function(e) {
-    if (this.keypress) {
+  window.addEventListener("keydown", function(e) {
+    if (this.keydown) {
       if (e.keyCode) {
-        this.keypress(e.keyCode);
+        this.keydown(e.keyCode);
       } else {
-        this.keypress(e.charCode);
+        this.keydown(e.charCode);
       }
     }
   }.bind(this));
@@ -164,6 +164,9 @@ Core.prototype = {
   },
   drawLights: function() {
     if (this.lights.length > 0) {
+      
+      this.context.globalCompositeOperation = "source-over";
+    
       this.context.fillStyle = this.lights[0].color;
       this.context.fillRect(-this.canvas.width, -this.canvas.height, 2*this.canvas.width, 2*this.canvas.height);
       
@@ -211,6 +214,26 @@ Core.prototype = {
       
     }
   },
+  drawPlayer: function() {
+    
+    this.context.globalCompositeOperation = "source-over";
+    
+    this.context.beginPath();
+    this.context.arc(Math.round(this.game.player.pos.x), Math.round(this.game.player.pos.y), 25, 0, Math.PI*2, false);
+    this.context.lineWidth = 5;
+    this.context.strokeStyle = "rgba(255, 255, 255, 1)";
+    this.context.stroke();
+    
+    this.context.lineWidth = 1;
+    
+    if (this.showEdges) {
+      this.context.beginPath();
+      this.context.moveTo(Math.round(this.game.movementRay.p.x), Math.round(this.game.movementRay.p.y));
+      this.context.lineTo(Math.round(this.game.movementRay.p.x + this.game.movementRay.v.x), Math.round(this.game.movementRay.p.y + this.game.movementRay.v.y));
+      this.context.stroke();
+    }
+    
+  },
   drawEdges: function(drawNormals) {
   
     this.context.globalCompositeOperation = "source-over";
@@ -252,18 +275,16 @@ Core.prototype = {
         this.game.updateRate = this.deltaTime*60;
       }
     
-      if (this.clearFrame) {
-        this.clearFrame();
-      } else {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      }
+      //this is where i would clear the frame, but the default lighting automatically does that.
+      
       this.context.save();
       this.context.translate(this.canvas.width/2 - this.screen.x, this.canvas.height/2 - this.screen.y);
     
-      this.game.update();
+      this.game.update(this.edges);
       this.screen = this.game.player.pos;
     
       this.drawLights();
+      this.drawPlayer();
       this.draw();
       if (this.showEdges) {
         this.drawEdges(true);
