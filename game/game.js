@@ -6,7 +6,8 @@ function Game() {
   this.player = {
     pos: new Vec2(0, 0),
     vel: new Vec2(0, 0),
-    acc: new Vec2(0, 0)};
+    acc: new Vec2(0, 0),
+    radius: 25};
   
   this.movementRay = new Ray(this.player.pos.x, this.player.pos.y, this.player.vel.x, this.player.vel.y, false);
   
@@ -36,17 +37,6 @@ Game.prototype = {
   
     this.gameTime += this.updateRate;
     
-    this.playerCollision(edgeArray);
-    
-    this.player.vel.x += this.player.acc.x*this.updateRate;
-    this.player.vel.y += this.player.acc.y*this.updateRate;
-    
-    this.player.pos.x += this.player.vel.x*this.updateRate;
-    this.player.pos.y += this.player.vel.y*this.updateRate;
-    
-    this.player.acc.x = 0;
-    this.player.acc.y = 0;
-    
     var movementDrag = this.movementD*Math.pow(this.player.vel.length(), 2);
     this.player.acc.x -= movementDrag*this.player.vel.unit().x;
     this.player.acc.y -= movementDrag*this.player.vel.unit().y;
@@ -63,22 +53,35 @@ Game.prototype = {
     this.player.acc.x += this.movementS*this.keyboardMovement.unit().x;
     this.player.acc.y += this.movementS*this.keyboardMovement.unit().y;
     
+    this.playerCollision(edgeArray);
+    
+    this.player.vel.x += this.player.acc.x;
+    this.player.vel.y += this.player.acc.y;
+    
+    this.player.pos.x += this.player.vel.x;
+    this.player.pos.y += this.player.vel.y;
+    
+    this.player.acc.x = 0;
+    this.player.acc.y = 0;
   },
   playerCollision: function(edgeArray) {
   
     this.movementRay.updateP(this.player.pos.x, this.player.pos.y);
-    this.movementRay.updateV(this.player.vel.x*this.updateRate + this.player.acc.x*this.updateRate, this.player.vel.y*this.updateRate + this.player.acc.y*this.updateRate);
-    
-    var collisionNormal = this.movementRay.nearestEdgeArrayCollision(edgeArray);
+    this.movementRay.updateV(this.player.vel.x + this.player.acc.x, this.player.vel.y + this.player.acc.y);
+  
+    var collisionNormal = this.movementRay.nearestEdgeArrayCollision(edgeArray, this.player.radius);
     
     if (collisionNormal) {
     
       this.playerDestination = false;
     
       var normalVeldot = collisionNormal.dot(this.movementRay.v);
-      this.player.acc.x -= 2*normalVeldot*collisionNormal.x;// + (this.player.vel.x*this.updateRate + this.player.acc.x*this.updateRate);
-      this.player.acc.y -= 2*normalVeldot*collisionNormal.y;// + (this.player.vel.y*this.updateRate + this.player.acc.y*this.updateRate);
+      
+      this.player.acc.x -= 1.0*normalVeldot*collisionNormal.x;
+      this.player.acc.y -= 1.0*normalVeldot*collisionNormal.y;
     }
+    
+    //if (this.player.pos.x + this.)
     
   },
   leftMouseDown: function(paramX, paramY) {
