@@ -37,29 +37,13 @@ Game.prototype = {
   
     this.gameTime += this.updateRate;
     
-    var movementDrag = this.movementD*Math.pow(this.player.vel.length(), 2);
-    this.player.acc.x -= movementDrag*this.player.vel.unit().x;
-    this.player.acc.y -= movementDrag*this.player.vel.unit().y;
-    
-    if (this.playerDestination) {
-      
-      var toDest = new Vec2(this.playerDestination.x - this.player.pos.x, this.playerDestination.y - this.player.pos.y);
-      
-      this.player.acc.x += this.movementK*toDest.length()*toDest.unit().x;
-      this.player.acc.y += this.movementK*toDest.length()*toDest.unit().y;
-      
-    }
-    
-    this.player.acc.x += this.movementS*this.keyboardMovement.unit().x;
-    this.player.acc.y += this.movementS*this.keyboardMovement.unit().y;
+    this.movementDrag();
+    this.accToDest();
+    this.keyboardAcc();
     
     this.playerCollision(edgeArray);
     
-    this.player.vel.x += this.player.acc.x;
-    this.player.vel.y += this.player.acc.y;
-    
-    this.player.pos.x += this.player.vel.x;
-    this.player.pos.y += this.player.vel.y;
+    this.updateMovement();
     
     this.player.acc.x = 0;
     this.player.acc.y = 0;
@@ -83,6 +67,32 @@ Game.prototype = {
     
     //if (this.player.pos.x + this.)
     
+  },
+  movementDrag: function() {
+    var drag = this.movementD*Math.pow(this.player.vel.length(), 2);
+    this.player.acc.x -= drag*this.player.vel.unit().x;
+    this.player.acc.y -= drag*this.player.vel.unit().y;
+  },
+  accToDest: function() {
+    if (this.playerDestination) {
+      
+      var toDest = new Vec2(this.playerDestination.x - this.player.pos.x, this.playerDestination.y - this.player.pos.y);
+      
+      this.player.acc.x += this.movementK*toDest.length()*toDest.unit().x;
+      this.player.acc.y += this.movementK*toDest.length()*toDest.unit().y;
+      
+    }
+  },
+  keyboardAcc: function () {
+    this.player.acc.x += this.movementS*this.keyboardMovement.unit().x;
+    this.player.acc.y += this.movementS*this.keyboardMovement.unit().y;
+  },
+  updateMovement: function() {
+    this.player.vel.x += this.player.acc.x;
+    this.player.vel.y += this.player.acc.y;
+    
+    this.player.pos.x += this.player.vel.x;
+    this.player.pos.y += this.player.vel.y;
   },
   leftMouseDown: function(paramX, paramY) {
     this.playerDestination = new Vec2(paramX, paramY);

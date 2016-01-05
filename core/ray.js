@@ -48,6 +48,32 @@ Ray.prototype = {
       return false;
     }
   },
+  circularNearestCollisionDist: function(point, radius) {
+    
+    var a = this.v.x*this.v.x + this.v.y*this.v.y;
+    
+    var b = 2*(this.v.x*(this.p.x - point.x) + this.v.y*(this.p.y - point.y));
+    
+    var c = this.p.x*this.p.x + this.p.y*this.p.y + point.x*point.x + point.y*point.y - radius*radius - 2*(this.p.x*point.x + this.p.y*point.y);
+    
+    if (4*a*c > b*b) {
+      return false;
+    } else {
+      var t1 = (-b + Math.sqrt(b*b - 4*a*c))/(2*a);
+      var t2 = (-b - Math.sqrt(b*b - 4*a*c))/(2*a);
+    }
+    
+    if (t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1) {
+      return Math.min(t1, t2);
+    } else if (t1 >= 0 && t1 <= 1) {
+      return t1;
+    } else if (t2 >= 0 && t2 <= 1) {
+      return t2;
+    } else {
+      return false;
+    }
+    
+  },
   updateP: function(paramX, paramY) {
     this.p = new Vec2(paramX, paramY);
   },
@@ -87,7 +113,29 @@ Ray.prototype = {
     if (nearest) {
       return edgeArray[nearestIndex].n;
     } else {
-      return false;
+    
+      //check for colisions within radius of edgeArray[i].p
+      
+      for (var i = 0; i < edgeArray.length; i++) {
+        if (!edgeArray[i].inverted) {
+        
+          var currentCollisionDist = this.circularNearestCollisionDist(edgeArray[i].p, radius);
+          
+          if (currentCollisionDist && (currentCollisionDist < nearest || !nearest)) {
+            nearest = currentCollisionDist;
+            nearestIndex = i;
+          }
+          
+        }
+      }
+      
+      if (nearest) {
+        var tempReturnVec2 = new Vec2(this.p.x + this.v.x*nearest - edgeArray[nearestIndex].p.x, this.p.y + this.v.y*nearest - edgeArray[nearestIndex].p.y);
+        return tempReturnVec2.unit();
+      } else {
+        return false;
+      }
+      
     }
   }
 };
