@@ -41,7 +41,9 @@ Game.prototype = {
     this.accToDest();
     this.keyboardAcc();
     
-    this.playerCollision(edgeArray);
+    for (var i=0; i<2; i++) {
+      this.playerCollision(edgeArray);
+    }
     
     this.updateMovement();
     
@@ -50,14 +52,21 @@ Game.prototype = {
   },
   playerCollision: function(edgeArray) {
   
-    this.movementRay.updateP(this.player.pos.x, this.player.pos.y);
     this.movementRay.updateV(this.player.vel.x + this.player.acc.x, this.player.vel.y + this.player.acc.y);
+    
+    var tempBufferVec2 = new Vec2(this.movementRay.v.unit().x*this.player.radius, this.movementRay.v.unit().y*this.player.radius);
+    
+    this.movementRay.updateP(this.player.pos.x - tempBufferVec2.x, this.player.pos.y - tempBufferVec2.y);
+    this.movementRay.updateV(this.movementRay.v.x + tempBufferVec2.x, this.movementRay.v.y + tempBufferVec2.y);
   
     var collisionNormal = this.movementRay.nearestEdgeArrayCollision(edgeArray, this.player.radius);
     
     if (collisionNormal) {
     
       this.playerDestination = false;
+      
+      this.movementRay.updateP(this.player.pos.x + tempBufferVec2.x, this.player.pos.y + tempBufferVec2.y);
+      this.movementRay.updateV(this.movementRay.v.x - tempBufferVec2.x, this.movementRay.v.y - tempBufferVec2.y);
     
       var normalVeldot = collisionNormal.dot(this.movementRay.v);
       
