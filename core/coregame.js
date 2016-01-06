@@ -1,6 +1,8 @@
 function CoreGame(core) {
   core.init = function() {
 
+  var tempRand = Math.random();
+
     this.edges = [
       new Edge(0, 100, 100*Math.cos(Math.PI/10), 100*Math.sin(Math.PI/10)),
       new Edge(100*Math.cos(Math.PI/10), 100*Math.sin(Math.PI/10), 100*Math.cos(-3*Math.PI/10), 100*Math.sin(-3*Math.PI/10)),
@@ -22,7 +24,8 @@ function CoreGame(core) {
       new Light(240, 0, "rgba(64, 0, 0, 1)")];
     
     this.objects = {
-      
+      ballOne: new Ball(256, -256, 3*Math.cos(tempRand), 3*Math.sin(tempRand), 10),
+      ballTwo: new Ball(-256, 256, -3*Math.cos(tempRand), -3*Math.sin(tempRand), 10)
     };
     
     moveEdges(-100, -100, this.edges, 0, 4);
@@ -34,9 +37,12 @@ function CoreGame(core) {
 
   core.draw = function() {
     
-    this.lights[1].update(320*Math.cbrt(Math.cos(this.game.gameTime/512)), 320*Math.cbrt(Math.sin(this.game.gameTime/512)), this.edges);
+    this.objects.ballOne.update(this.edges);
+    this.objects.ballTwo.update(this.edges);
     
-    this.lights[2].update(320*Math.cbrt(Math.cos(-this.game.gameTime/500)), 320*Math.cbrt(Math.sin(-this.game.gameTime/500)), this.edges);
+    this.lights[1].update(this.objects.ballOne.pos.x, this.objects.ballOne.pos.y, this.edges);
+    
+    this.lights[2].update(this.objects.ballTwo.pos.x, this.objects.ballTwo.pos.y, this.edges);
 
     this.lights[0].update(this.game.player.pos.x, this.game.player.pos.y, this.edges);
     
@@ -69,32 +75,32 @@ function CoreGame(core) {
     if (charCode == 116 || charCode == 84) {
       //T is pressed
       this.showEdges = !this.showEdges;
-    } else if (charCode == 97 || charCode == 65) {
+    } else if (charCode == 97 || charCode == 65 || charCode == 37) {
       //A is pressed
       this.game.keydown(0);
-    } else if (charCode == 119 || charCode == 87) {
+    } else if (charCode == 119 || charCode == 87 || charCode == 38) {
       //W is pressed
       this.game.keydown(1);
-    } else if (charCode == 100 || charCode == 68) {
+    } else if (charCode == 100 || charCode == 68 || charCode == 39) {
       //D is pressed
       this.game.keydown(2);
-    } else if (charCode == 115 || charCode == 83) {
+    } else if (charCode == 115 || charCode == 83 || charCode == 40) {
       //S is pressed
       this.game.keydown(3);
     }
   }
   
   core.keyup = function(charCode) {
-    if (charCode == 97 || charCode == 65) {
+    if (charCode == 97 || charCode == 65 || charCode == 37) {
       //A is released
       this.game.keyup(0);
-    } else if (charCode == 119 || charCode == 87) {
+    } else if (charCode == 119 || charCode == 87 || charCode == 38) {
       //W is released
       this.game.keyup(1);
-    } else if (charCode == 100 || charCode == 68) {
+    } else if (charCode == 100 || charCode == 68 || charCode == 39) {
       //D is released
       this.game.keyup(2);
-    } else if (charCode == 115 || charCode == 83) {
+    } else if (charCode == 115 || charCode == 83 || charCode == 40) {
       //S is released
       this.game.keyup(3);
     }

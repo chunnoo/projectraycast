@@ -9,15 +9,15 @@ Vec2.prototype = {
   length: function() {
     return Math.sqrt(this.x*this.x + this.y*this.y);
   },
-  unit: function() {
+  normalize: function() {
     var l = this.length();
     if (l <= 0) {
       return new Vec2(0, 0);
     }
     return new Vec2(this.x / l, this.y / l);
   },
-  normalize: function() {
-    var u = this.unit();
+  normal: function() {
+    var u = this.normalize();
     return new Vec2(-u.y, u.x);
   },
   diff: function(paramVec) {
