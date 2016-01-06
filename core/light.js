@@ -1,6 +1,6 @@
 function Light(paramSourceX, paramSourceY, paramColor) {
 
-  this.source = new Vec2(paramSourceX, paramSourceY);
+  this.source = new Vec2(Math.round(paramSourceX), Math.round(paramSourceY));
   
   if (paramColor) {
     this.color = paramColor;

@@ -7,7 +7,7 @@ function Ray(paramPX, paramPY, paramVX, paramVY, paramUnlimited) {
   this.v = new Vec2(paramVX, paramVY);
   
   if (this.unlimited) {
-    this.v = this.v.unit();
+    this.v = this.v.normalize();
   }
   
 }
@@ -81,7 +81,7 @@ Ray.prototype = {
     this.v = new Vec2(paramX, paramY);
   
     if (this.unlimited) {
-      this.v = this.v.unit();
+      this.v = this.v.normalize();
     }
   },
   edgeArrayCollision: function(edgeArray) {
@@ -131,7 +131,7 @@ Ray.prototype = {
       
       if (nearest) {
         var tempReturnVec2 = new Vec2(this.p.x + this.v.x*nearest - edgeArray[nearestIndex].p.x, this.p.y + this.v.y*nearest - edgeArray[nearestIndex].p.y);
-        return tempReturnVec2.unit();
+        return tempReturnVec2.normalize();
       } else {
         return false;
       }
